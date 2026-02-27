@@ -1,8 +1,8 @@
-# StaffPilot 🚀
+# SimpliRH 🚀
 
 **SaaS de gestion RH pour les TPE/PME françaises**
 
-StaffPilot simplifie la gestion quotidienne des salariés : planning, congés, heures supplémentaires, documents, bulletins de paie et export comptable. Pas de fiche de paie, pas de complexité inutile — juste ce dont vous avez besoin.
+SimpliRH simplifie la gestion quotidienne des salariés : planning, congés, heures supplémentaires, documents, bulletins de paie et export comptable. Pas de fiche de paie, pas de complexité inutile — juste ce dont vous avez besoin.
 
 ## Fonctionnalités
 
@@ -30,8 +30,8 @@ StaffPilot simplifie la gestion quotidienne des salariés : planning, congés, h
 
 ```bash
 # Cloner
-git clone https://github.com/votre-compte/staffpilot.git
-cd staffpilot
+git clone https://github.com/votre-compte/simplirh.git
+cd simplirh
 
 # Backend
 composer install
@@ -55,9 +55,9 @@ php artisan serve
 ## Compte démo
 
 Après le seeding :
-- **Admin** : admin@demo.staffpilot.fr / password
-- **Manager** : manager1@demo.staffpilot.fr / password
-- **Employé** : employe1@demo.staffpilot.fr / password
+- **Admin** : admin@demo.simplirh.fr / password
+- **Manager** : manager1@demo.simplirh.fr / password
+- **Employé** : employe1@demo.simplirh.fr / password
 
 ## Licence
 

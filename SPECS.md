@@ -1,4 +1,4 @@
-# SPECS.md — Spécifications détaillées StaffPilot
+# SPECS.md — Spécifications détaillées SimpliRH
 
 ---
 
@@ -745,8 +745,8 @@ POST   /stripe/webhook              → StripeWebhookController@handle
 **manifest.json** :
 ```json
 {
-  "name": "StaffPilot - Gestion RH",
-  "short_name": "StaffPilot",
+  "name": "SimpliRH - Gestion RH",
+  "short_name": "SimpliRH",
   "description": "Gérez vos RH simplement",
   "start_url": "/dashboard",
   "display": "standalone",
@@ -813,7 +813,7 @@ POST   /stripe/webhook              → StripeWebhookController@handle
 - Prévisualisation du PDF/Excel avant envoi
 
 **Email au comptable** :
-- Objet : "StaffPilot - Variables de paie [NomEntreprise] - [Période]"
+- Objet : "SimpliRH - Variables de paie [NomEntreprise] - [Période]"
 - Corps : message professionnel avec récap (nombre de salariés, période)
 - Pièce jointe : le fichier export (PDF, Excel ou CSV selon config)
 - Copie au RH qui a envoyé
@@ -1002,7 +1002,7 @@ class DocumentService
 
 Pour le développement et la démo. Crée :
 - 1 entreprise "Démo SARL" (plan: business)
-- 1 admin : admin@demo.staffpilot.fr / password
+- 1 admin : admin@demo.simplirh.fr / password
 - 2 managers : manager1@demo, manager2@demo
 - 10 employés répartis dans 3 départements (Commercial, Technique, Admin)
 - Types de congés : CP (25j), RTT (10j), Sans solde (0j), Maladie (0j)

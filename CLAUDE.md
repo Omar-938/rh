@@ -1,8 +1,8 @@
-# CLAUDE.md — StaffPilot
+# CLAUDE.md — SimpliRH
 
 ## Projet
 
-StaffPilot est un SaaS de gestion RH pour TPE/PME françaises. PWA mobile-first, hébergé sur o2switch (mutualisé PHP).
+SimpliRH est un SaaS de gestion RH pour TPE/PME françaises. PWA mobile-first, hébergé sur o2switch (mutualisé PHP).
 
 ## Stack technique
 
@@ -63,7 +63,7 @@ Single-database avec isolation par `company_id`. Chaque modèle Eloquent utilise
 ### Structure des dossiers
 
 ```
-staffpilot/
+simplirh/
 ├── app/
 │   ├── Actions/              # Classes d'action single-purpose
 │   ├── Enums/                # PHP Enums (rôles, statuts, types)
@@ -331,16 +331,16 @@ Suivre STRICTEMENT cet ordre. Ne pas sauter d'étapes.
 ## Variables d'environnement requises
 
 ```env
-APP_NAME=StaffPilot
-APP_URL=https://staffpilot.fr
+APP_NAME=SimpliRH
+APP_URL=https://simplirh.fr
 DB_CONNECTION=mysql
-DB_DATABASE=staffpilot
+DB_DATABASE=simplirh
 MAIL_MAILER=smtp
 MAIL_HOST=
 MAIL_PORT=587
 MAIL_USERNAME=
 MAIL_PASSWORD=
-MAIL_FROM_ADDRESS=noreply@staffpilot.fr
+MAIL_FROM_ADDRESS=noreply@simplirh.fr
 STRIPE_KEY=
 STRIPE_SECRET=
 STRIPE_WEBHOOK_SECRET=
