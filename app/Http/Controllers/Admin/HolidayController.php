@@ -42,11 +42,12 @@ class HolidayController extends Controller
             ]);
 
         // Comptages par année pour afficher les badges
+        // strftime('%Y', date) fonctionne sur SQLite et MySQL (via YEAR() émulé par Eloquent)
         $yearlyCounts = Holiday::withoutGlobalScopes()
             ->where('company_id', $user->company_id)
-            ->selectRaw('YEAR(date) as year, COUNT(*) as total')
-            ->groupBy('year')
-            ->pluck('total', 'year')
+            ->get(['date'])
+            ->groupBy(fn ($h) => $h->date->year)
+            ->map(fn ($group) => $group->count())
             ->toArray();
 
         return Inertia::render('Settings/Holidays', [
