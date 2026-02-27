@@ -1,0 +1,152 @@
+name: Tests & Déploiement
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ════════════════════════════════════════════════════════════
+  # JOB 1 : Tests (PHP + Pest)
+  # ════════════════════════════════════════════════════════════
+  tests:
+    name: Tests Pest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_sqlite, sqlite3, openssl, bcmath, json, tokenizer, xml, ctype, fileinfo
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Installer les dépendances PHP
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Copier .env de test
+        run: cp .env.example .env
+
+      - name: Générer la clé d'application
+        run: php artisan key:generate
+
+      - name: Lancer les tests Pest
+        run: ./vendor/bin/pest --no-coverage
+
+  # ════════════════════════════════════════════════════════════
+  # JOB 2 : Build des assets frontend
+  # ════════════════════════════════════════════════════════════
+  build:
+    name: Build Assets
+    runs-on: ubuntu-latest
+    needs: tests  # ne démarre que si les tests passent
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Installer les dépendances Node
+        run: npm ci
+
+      - name: Build de production (Vite)
+        run: npm run build
+
+      - name: Uploader les assets buildés
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-assets
+          path: public/build/
+          retention-days: 1
+
+  # ════════════════════════════════════════════════════════════
+  # JOB 3 : Déploiement sur o2switch
+  # (uniquement sur push vers main, pas sur les PRs)
+  # ════════════════════════════════════════════════════════════
+  deploy:
+    name: Déploiement o2switch
+    runs-on: ubuntu-latest
+    needs: [tests, build]  # ne démarre que si tests ET build passent
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Récupérer les assets buildés
+        uses: actions/download-artifact@v4
+        with:
+          name: built-assets
+          path: public/build/
+
+      - name: Configurer la clé SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Ajouter le serveur aux hôtes connus
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Synchroniser les fichiers PHP (rsync)
+        run: |
+          rsync -azv --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='node_modules/' \
+            --exclude='.env' \
+            --exclude='storage/app/documents/' \
+            --exclude='storage/app/payslips/' \
+            --exclude='storage/logs/' \
+            --exclude='storage/framework/cache/' \
+            --exclude='storage/framework/sessions/' \
+            --exclude='storage/framework/views/' \
+            --exclude='bootstrap/cache/' \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            ./ \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.REMOTE_PATH }}/
+
+      - name: Déploiement sur le serveur (post-deploy)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+            cd ${{ secrets.REMOTE_PATH }}
+
+            echo "📦 Installation des dépendances PHP..."
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            echo "🗃️  Migrations..."
+            php artisan migrate --force
+
+            echo "⚡ Optimisation du cache..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
+
+            echo "🔄 Redémarrage des queues..."
+            php artisan queue:restart
+
+            echo "✅ Déploiement terminé avec succès !"
