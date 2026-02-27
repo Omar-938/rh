@@ -166,6 +166,31 @@ class RecruitmentController extends Controller
         return back()->with('success', 'Offre mise à jour.');
     }
 
+    /**
+     * Supprime définitivement une offre et tous ses candidats (cascade).
+     * Réservé aux admins.
+     */
+    public function destroyPosting(Request $request, JobPosting $posting): RedirectResponse
+    {
+        $user = $request->user();
+        abort_unless($posting->company_id === $user->company_id, 403);
+        abort_unless($user->isAdmin(), 403);
+
+        // Supprimer les CVs physiques des candidats
+        foreach ($posting->candidates as $candidate) {
+            if ($candidate->cv_path) {
+                $this->service->deleteCv($candidate->cv_path);
+            }
+        }
+
+        $title = $posting->title;
+        $posting->delete(); // cascade supprime les candidats en DB
+
+        return redirect()
+            ->route('recruitment.index')
+            ->with('success', "L'offre « {$title} » a été supprimée.");
+    }
+
     // ─── Candidats ──────────────────────────────────────────────────────────────
 
     /**

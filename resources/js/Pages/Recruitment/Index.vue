@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { Head, Link, router } from '@inertiajs/vue3'
+import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import AppLayout from '@/Components/Layout/AppLayout.vue'
 
 const props = defineProps({
@@ -36,6 +36,26 @@ function submitForm() {
             form.value = { title: '', department_id: '', contract_type: 'cdi', location: '', salary_range: '', description: '', requirements: '', status: 'open' }
         },
         onFinish: () => { submitting.value = false },
+    })
+}
+
+// ── Suppression offre ──────────────────────────────────────────────────────────
+const isAdmin = computed(() => usePage().props.auth?.user?.role === 'admin')
+const confirmDelete = ref(null)   // { id, title, candidates_count }
+const deleting      = ref(false)
+
+function askDelete(posting, e) {
+    e.preventDefault()
+    e.stopPropagation()
+    confirmDelete.value = { id: posting.id, title: posting.title, candidates_count: posting.candidates_count, delete_url: posting.delete_url }
+}
+
+function doDelete() {
+    if (deleting.value) return
+    deleting.value = true
+    router.delete(confirmDelete.value.delete_url, {
+        onSuccess: () => { confirmDelete.value = null },
+        onFinish:  () => { deleting.value = false },
     })
 }
 
@@ -137,12 +157,25 @@ const FILTERS = [
                             {{ posting.contract_label }}
                         </p>
                     </div>
-                    <span class="shrink-0 inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-semibold"
-                          :class="[STATUS_CFG[posting.status]?.bg, STATUS_CFG[posting.status]?.text]">
-                        <span class="w-1.5 h-1.5 rounded-full"
-                              :class="STATUS_CFG[posting.status]?.dot" />
-                        {{ posting.status_label }}
-                    </span>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-semibold"
+                              :class="[STATUS_CFG[posting.status]?.bg, STATUS_CFG[posting.status]?.text]">
+                            <span class="w-1.5 h-1.5 rounded-full"
+                                  :class="STATUS_CFG[posting.status]?.dot" />
+                            {{ posting.status_label }}
+                        </span>
+                        <!-- Bouton supprimer (admin uniquement) -->
+                        <button v-if="isAdmin"
+                                @click="askDelete(posting, $event)"
+                                title="Supprimer l'offre"
+                                class="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg
+                                       text-slate-400 hover:text-red-600 hover:bg-red-50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Location + salary -->
@@ -196,6 +229,56 @@ const FILTERS = [
         </div>
 
     </AppLayout>
+
+    <!-- ── Modal Confirmation Suppression ────────────────────────────────────── -->
+    <Teleport to="body">
+        <Transition enter-active-class="transition duration-150 ease-out" enter-from-class="opacity-0 scale-95"
+                    enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-100 ease-in"
+                    leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+            <div v-if="confirmDelete" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="!deleting && (confirmDelete = null)" />
+
+                <div class="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
+                    <!-- Icône danger -->
+                    <div class="flex flex-col items-center pt-8 pb-5 px-6 text-center">
+                        <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                            <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-800 mb-1">Supprimer l'offre ?</h3>
+                        <p class="text-sm text-slate-500 mb-1">
+                            <span class="font-semibold text-slate-700">« {{ confirmDelete.title }} »</span>
+                        </p>
+                        <p v-if="confirmDelete.candidates_count > 0" class="text-xs text-red-500 font-medium mt-1">
+                            ⚠ {{ confirmDelete.candidates_count }} candidat{{ confirmDelete.candidates_count > 1 ? 's' : '' }} seront également supprimés.
+                        </p>
+                        <p class="text-xs text-slate-400 mt-2">Cette action est irréversible.</p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-2 px-6 pb-6">
+                        <button @click="confirmDelete = null" :disabled="deleting"
+                                class="flex-1 px-4 py-2.5 text-sm font-semibold border border-slate-200 text-slate-700
+                                       rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-60">
+                            Annuler
+                        </button>
+                        <button @click="doDelete" :disabled="deleting"
+                                class="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5
+                                       bg-red-600 hover:bg-red-700 text-white text-sm font-semibold
+                                       rounded-xl transition-colors disabled:opacity-60">
+                            <svg v-if="deleting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                            </svg>
+                            {{ deleting ? 'Suppression…' : 'Supprimer' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Transition>
+    </Teleport>
 
     <!-- ── Modal Nouvelle offre ───────────────────────────────────────────────── -->
     <Teleport to="body">

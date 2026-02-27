@@ -167,6 +167,7 @@ Route::middleware(['auth', 'verified', 'company.scope'])->group(function () {
         Route::post('/offres',                             [RecruitmentController::class, 'storePosting'])   ->name('postings.store');
         Route::get('/offres/{posting}',                    [RecruitmentController::class, 'showPosting'])    ->name('postings.show');
         Route::patch('/offres/{posting}',                  [RecruitmentController::class, 'updatePosting'])  ->name('postings.update');
+        Route::delete('/offres/{posting}',                 [RecruitmentController::class, 'destroyPosting']) ->name('postings.destroy');
         Route::post('/candidats',                          [RecruitmentController::class, 'storeCandidate']) ->name('candidates.store');
         Route::patch('/candidats/{candidate}/etape',       [RecruitmentController::class, 'updateStage'])    ->name('candidates.update-stage');
         Route::patch('/candidats/{candidate}',             [RecruitmentController::class, 'updateCandidate'])->name('candidates.update');

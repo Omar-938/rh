@@ -47,6 +47,7 @@ class RecruitmentService
             'candidates_count'=> $totalCandidates,
             'stage_counts'    => $counts,
             'show_url'        => route('recruitment.postings.show', $posting->id),
+            'delete_url'      => route('recruitment.postings.destroy', $posting->id),
         ];
     }
 
