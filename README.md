@@ -1,2 +1,0 @@
-# rh
-gestion salarial 
