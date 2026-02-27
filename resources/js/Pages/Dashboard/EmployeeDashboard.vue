@@ -132,6 +132,9 @@ const requestStatusConfig = {
                             : (idx === todayIndex ? 'bg-white' : 'bg-success-500'),
                     ]" />
 
+                    <!-- Emoji type -->
+                    <span class="text-base mb-1">{{ day.type_emoji }}</span>
+
                     <!-- Horaires -->
                     <span v-if="!day.is_off" :class="['text-xs text-center leading-tight tabular-nums', idx === todayIndex ? 'text-primary-100' : 'text-slate-500']">
                         {{ day.start }}<br>{{ day.end }}
