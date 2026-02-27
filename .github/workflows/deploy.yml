@@ -1,4 +1,4 @@
-name: Tests & Déploiement (FTP)
+name: Tests & Déploiement
 
 on:
   push:
@@ -76,11 +76,11 @@ jobs:
           retention-days: 1
 
   # ════════════════════════════════════════════════════════════
-  # JOB 3 : Déploiement FTP sur o2switch
+  # JOB 3 : Déploiement SSH sur o2switch
   # (uniquement sur push vers main)
   # ════════════════════════════════════════════════════════════
   deploy:
-    name: Déploiement FTP o2switch
+    name: Déploiement o2switch
     runs-on: ubuntu-latest
     needs: [tests, build]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -95,52 +95,58 @@ jobs:
           name: built-assets
           path: public/build/
 
-      - name: Installer les dépendances PHP (pour exclure vendor du FTP)
-        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Déploiement FTP — Fichiers principaux
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Configurer la clé SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: 21
-          protocol: ftps
-          local-dir: ./
-          server-dir: ${{ secrets.FTP_REMOTE_PATH }}/
-          # Exclusions : ne pas écraser .env, storage, logs
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            .github/**
-            storage/app/documents/**
-            storage/app/payslips/**
-            storage/logs/**
-            storage/framework/cache/**
-            storage/framework/sessions/**
-            storage/framework/views/**
-            bootstrap/cache/**
-            .env
-            .env.*
-            *.md
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Attendre que le FTP soit finalisé
-        run: sleep 10
-
-      - name: Déclencher le script de déploiement (migrations + cache)
+      - name: Ajouter le serveur aux hôtes connus
         run: |
-          RESPONSE=$(curl -s -o /tmp/deploy_response.json -w "%{http_code}" \
-            "https://${{ secrets.APP_URL }}/deploy-run.php?token=${{ secrets.DEPLOY_TOKEN }}")
+          mkdir -p ~/.ssh
+          ssh-keyscan -H -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-          echo "=== Réponse du serveur ==="
-          cat /tmp/deploy_response.json
-          echo ""
-          echo "=== Code HTTP: $RESPONSE ==="
+      - name: Synchroniser les fichiers (rsync)
+        run: |
+          rsync -az --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='node_modules/' \
+            --exclude='.env' \
+            --exclude='storage/app/documents/' \
+            --exclude='storage/app/payslips/' \
+            --exclude='storage/logs/' \
+            --exclude='storage/framework/cache/' \
+            --exclude='storage/framework/sessions/' \
+            --exclude='storage/framework/views/' \
+            --exclude='bootstrap/cache/' \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            ./ \
+            ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.REMOTE_PATH }}/
 
-          if [ "$RESPONSE" != "200" ]; then
-            echo "❌ Le déploiement a échoué (HTTP $RESPONSE)"
-            exit 1
-          fi
+      - name: Post-déploiement (migrations + cache)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+            cd ${{ secrets.REMOTE_PATH }}
 
-          echo "✅ Déploiement terminé avec succès !"
+            echo "📦 Installation des dépendances PHP..."
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            echo "🗃️  Migrations..."
+            php artisan migrate --force
+
+            echo "⚡ Optimisation du cache..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan event:cache
+
+            echo "🔄 Redémarrage des queues..."
+            php artisan queue:restart
+
+            echo "✅ Déploiement terminé !"
