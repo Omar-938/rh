@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\ContractType;
 use App\Enums\UserRole;
+use App\Models\Schedule;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -211,6 +212,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(User::class, 'manager_id');
     }
 
-    // Les autres relations (congés, pointage, documents, etc.)
-    // seront ajoutées au fil des étapes suivantes.
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
