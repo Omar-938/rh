@@ -3,6 +3,16 @@ import { computed, ref, watch } from 'vue'
 import { Head, Link, router } from '@inertiajs/vue3'
 import AppLayout from '@/Components/Layout/AppLayout.vue'
 
+const vClickOutside = {
+    mounted(el, binding) {
+        el._clickOutsideHandler = (e) => { if (!el.contains(e.target)) binding.value(e) }
+        document.addEventListener('click', el._clickOutsideHandler)
+    },
+    unmounted(el) {
+        document.removeEventListener('click', el._clickOutsideHandler)
+    },
+}
+
 const props = defineProps({
     documents:      { type: Object, required: true },
     category_counts:{ type: Object, default: () => ({}) },

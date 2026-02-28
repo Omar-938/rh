@@ -99,32 +99,42 @@ class DashboardController extends Controller
                 ->count()
             : 0;
 
-        $pendingOvertimeItems = $teamIds->isNotEmpty()
-            ? OvertimeEntry::withoutGlobalScopes()
-                ->with('user')
+        $leavesPendingCount = $teamIds->isNotEmpty()
+            ? LeaveRequest::withoutGlobalScopes()
                 ->whereIn('user_id', $teamIds)
-                ->where('status', OvertimeStatus::Pending->value)
-                ->orderByDesc('date')
+                ->where('status', LeaveStatus::Pending->value)
+                ->count()
+            : 0;
+
+        $pendingLeaveItems = $teamIds->isNotEmpty()
+            ? LeaveRequest::withoutGlobalScopes()
+                ->with(['user', 'leaveType'])
+                ->whereIn('user_id', $teamIds)
+                ->where('status', LeaveStatus::Pending->value)
+                ->orderByDesc('created_at')
                 ->limit(10)
                 ->get()
-                ->map(fn (OvertimeEntry $e) => [
-                    'id'            => $e->id,
-                    'employee_name' => $e->user?->full_name,
-                    'initials'      => $e->user?->initials,
-                    'type'          => 'Heures sup.',
-                    'hours'         => $e->hours_label,
+                ->map(fn (LeaveRequest $lr) => [
+                    'id'            => $lr->id,
+                    'employee_name' => $lr->user?->full_name,
+                    'initials'      => $lr->user?->initials,
+                    'type'          => $lr->leaveType?->name,
+                    'icon'          => $lr->leaveType?->icon,
+                    'days_count'    => $lr->days_count,
+                    'start_date'    => $lr->start_date->translatedFormat('j M Y'),
                 ])
             : collect();
 
         return Inertia::render('Dashboard/ManagerDashboard', [
             'stats' => [
                 'team_size'        => $teamIds->count(),
-                'absent_today'     => 0,  // phase 2
+                'absent_today'     => 0,
                 'overtime_pending' => $overtimePendingCount,
-                'present_today'    => 0,  // phase 3
+                'leaves_pending'   => $leavesPendingCount,
+                'present_today'    => 0,
             ],
-            'pending_approvals' => $pendingOvertimeItems,
-            'team_today'        => [],
+            'pending_leaves' => $pendingLeaveItems,
+            'team_today'     => [],
         ]);
     }
 

@@ -18,6 +18,9 @@ const form = useForm({
     attachment:       null,
 })
 
+// Demi-journée (visible uniquement si jour unique)
+const halfDay = ref(null) // null = journée entière | 'morning' | 'afternoon'
+
 const attachmentInput = ref(null)
 const attachmentName  = ref('')
 
@@ -75,17 +78,30 @@ watch(() => form.start_date, (val) => {
     }
 })
 
-// Reset demi-journées si date unique
 const isSingleDay = computed(() =>
     form.start_date && form.end_date && form.start_date === form.end_date
 )
 
+// Quand on passe en plage multi-jours, on remet en journées pleines
 watch(isSingleDay, (val) => {
-    if (val) {
-        // Pour un seul jour les deux options sont exclusives
-        if (form.start_half === 'afternoon' && form.end_half === 'morning') {
-            form.end_half = null
-        }
+    if (!val) {
+        halfDay.value    = null
+        form.start_half  = null
+        form.end_half    = null
+    }
+})
+
+// Synchronise halfDay → champs form (pour compatibilité backend)
+watch(halfDay, (val) => {
+    if (val === 'morning') {
+        form.start_half = null
+        form.end_half   = 'morning'
+    } else if (val === 'afternoon') {
+        form.start_half = 'afternoon'
+        form.end_half   = null
+    } else {
+        form.start_half = null
+        form.end_half   = null
     }
 })
 
@@ -236,51 +252,42 @@ function submit() {
                         </div>
                     </div>
 
-                    <!-- ── Demi-journées ── -->
-                    <div v-if="form.start_date && form.end_date" class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase
-                                          tracking-wider mb-2">
-                                Début
-                            </label>
-                            <div class="flex gap-2">
-                                <button
-                                    type="button"
-                                    @click="form.start_half = form.start_half === 'afternoon' ? null : 'afternoon'"
-                                    class="flex-1 px-3 py-2 rounded-xl text-xs font-semibold
-                                           border transition-all"
-                                    :class="form.start_half === 'afternoon'
-                                        ? 'bg-amber-50 border-amber-300 text-amber-700'
-                                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'"
-                                >
-                                    Après-midi
-                                </button>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-1">
-                                Le matin est inclus par défaut
-                            </p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 uppercase
-                                          tracking-wider mb-2">
-                                Fin
-                            </label>
-                            <div class="flex gap-2">
-                                <button
-                                    type="button"
-                                    @click="form.end_half = form.end_half === 'morning' ? null : 'morning'"
-                                    class="flex-1 px-3 py-2 rounded-xl text-xs font-semibold
-                                           border transition-all"
-                                    :class="form.end_half === 'morning'
-                                        ? 'bg-sky-50 border-sky-300 text-sky-700'
-                                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'"
-                                >
-                                    Matin uniquement
-                                </button>
-                            </div>
-                            <p class="text-[10px] text-slate-400 mt-1">
-                                L'après-midi est inclus par défaut
-                            </p>
+                    <!-- ── Demi-journée (uniquement si même jour) ── -->
+                    <div v-if="isSingleDay">
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">
+                            Durée
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button
+                                type="button"
+                                @click="halfDay = null"
+                                class="px-3 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all"
+                                :class="halfDay === null
+                                    ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                    : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'"
+                            >
+                                Journée entière
+                            </button>
+                            <button
+                                type="button"
+                                @click="halfDay = 'morning'"
+                                class="px-3 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all"
+                                :class="halfDay === 'morning'
+                                    ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                    : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'"
+                            >
+                                Matin
+                            </button>
+                            <button
+                                type="button"
+                                @click="halfDay = 'afternoon'"
+                                class="px-3 py-2.5 rounded-xl text-sm font-semibold border-2 transition-all"
+                                :class="halfDay === 'afternoon'
+                                    ? 'border-primary-500 bg-primary-50 text-primary-700'
+                                    : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'"
+                            >
+                                Après-midi
+                            </button>
                         </div>
                     </div>
 
@@ -299,7 +306,9 @@ function submit() {
                                 </p>
                                 <p class="text-xs mt-0.5"
                                    :class="balanceWarning ? 'text-danger-500' : 'text-slate-400'">
-                                    Jours ouvrés (hors week-ends)
+                                    <span v-if="isSingleDay && halfDay === 'morning'">Matin uniquement</span>
+                                    <span v-else-if="isSingleDay && halfDay === 'afternoon'">Après-midi uniquement</span>
+                                    <span v-else>Jours ouvrés (hors week-ends)</span>
                                 </p>
                             </div>
                             <span class="text-2xl font-display font-bold"

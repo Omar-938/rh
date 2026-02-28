@@ -30,7 +30,12 @@ use Inertia\Inertia;
 | Page d'accueil publique
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn () => Inertia::render('Welcome'))->name('home');
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+    return Inertia::render('Welcome');
+})->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -145,7 +150,9 @@ Route::middleware(['auth', 'verified', 'company.scope'])->group(function () {
         Route::post('/pause',    [TimeTrackingController::class, 'startBreak'])->name('break-start');
         Route::post('/reprise',  [TimeTrackingController::class, 'endBreak'])  ->name('break-end');
         Route::get('/historique',[TimeTrackingController::class, 'history'])   ->name('history');
-        Route::get('/rapport',   [TimeTrackingController::class, 'report'])    ->name('report')
+        Route::get('/rapport',   [TimeTrackingController::class, 'report'])       ->name('report')
+             ->middleware('role:admin,manager');
+        Route::get('/equipe',    [TimeTrackingController::class, 'teamOverview'])->name('team-overview')
              ->middleware('role:admin,manager');
     });
 

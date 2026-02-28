@@ -3,7 +3,6 @@ import { ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import Sidebar from '@/Components/Layout/Sidebar.vue'
 import TopBar from '@/Components/Layout/TopBar.vue'
-import MobileNav from '@/Components/Layout/MobileNav.vue'
 import Toast from '@/Components/UI/Toast.vue'
 import InstallBanner from '@/Components/PWA/InstallBanner.vue'
 
@@ -57,7 +56,7 @@ watch(() => page.url, () => { sidebarOpen.value = false })
                     <div
                         :key="page.url"
                         class="px-4 py-6 sm:px-6 lg:px-8
-                               pb-[calc(3.5rem+env(safe-area-inset-bottom))] lg:pb-8
+                               pb-[calc(1.5rem+env(safe-area-inset-bottom))] lg:pb-8
                                max-w-screen-2xl mx-auto w-full"
                     >
                         <slot />
@@ -65,9 +64,6 @@ watch(() => page.url, () => { sidebarOpen.value = false })
                 </Transition>
             </main>
         </div>
-
-        <!-- ── Navigation mobile bas ── -->
-        <MobileNav />
 
         <!-- ── Toast notifications ── -->
         <Toast />

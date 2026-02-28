@@ -27,16 +27,25 @@
 
         <!-- CTA -->
         <div class="flex items-center gap-3 flex-shrink-0">
-          <Link href="/login" class="hidden sm:block text-sm font-medium transition-colors"
+          <!-- Mobile : bouton Connexion uniquement -->
+          <a href="/login"
+            class="sm:hidden px-4 py-2 text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0"
+            :class="scrolled ? 'bg-[#1B4F72] hover:bg-[#154060] text-white' : 'bg-white text-[#1B4F72] hover:bg-white/90'"
+          >
+            Connexion
+          </a>
+
+          <!-- Desktop : lien Se connecter + bouton Essai gratuit -->
+          <a href="/login" class="hidden sm:block text-sm font-medium transition-colors"
             :class="scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'">
             Se connecter
-          </Link>
-          <Link href="/register"
-            class="px-4 py-2 text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0"
+          </a>
+          <a href="/register"
+            class="hidden sm:block px-4 py-2 text-sm font-semibold rounded-xl transition-all shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0"
             :class="scrolled ? 'bg-[#1B4F72] hover:bg-[#154060] text-white' : 'bg-white text-[#1B4F72] hover:bg-white/90'"
           >
             Essai gratuit
-          </Link>
+          </a>
         </div>
       </div>
     </header>
@@ -71,14 +80,14 @@
 
             <!-- CTAs -->
             <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-8">
-              <Link href="/register"
+              <a href="/register"
                 class="group inline-flex items-center justify-center gap-2 px-7 py-4 bg-white text-[#1B4F72] font-bold text-base rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 active:translate-y-0"
               >
                 Démarrer gratuitement
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
                 </svg>
-              </Link>
+              </a>
               <a href="#demo"
                 class="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white/10 border border-white/20 text-white font-semibold text-base rounded-2xl hover:bg-white/20 transition-all duration-200"
               >
@@ -346,13 +355,13 @@
         </div>
 
         <div class="mt-12">
-          <Link href="/register"
+          <a href="/register"
             class="inline-flex items-center gap-2 px-8 py-4 bg-[#1B4F72] hover:bg-[#154060] text-white font-bold text-base rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
             Créer mon espace gratuitement
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
             </svg>
-          </Link>
+          </a>
         </div>
       </div>
     </section>
@@ -427,14 +436,14 @@
               <span class="text-sm text-slate-400">/mois HT</span>
             </div>
 
-            <Link href="/register"
+            <a href="/register"
               class="w-full py-3 text-sm font-bold rounded-xl text-center transition-all mb-6 block"
               :class="plan.popular
                 ? 'bg-[#1B4F72] hover:bg-[#154060] text-white shadow-md hover:shadow-lg'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700'"
             >
               Commencer l'essai gratuit
-            </Link>
+            </a>
 
             <ul class="space-y-2.5 text-sm">
               <li v-for="f in plan.features" :key="f" class="flex items-start gap-2 text-slate-600">
@@ -510,13 +519,13 @@
           Essai gratuit 14 jours, sans carte bancaire.
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-          <Link href="/register"
+          <a href="/register"
             class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-[#1B4F72] font-bold text-base rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-200">
             Démarrer l'essai gratuit
             <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
             </svg>
-          </Link>
+          </a>
           <a href="mailto:bonjour@simpli-rh.com"
             class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 border border-white/20 text-white font-semibold text-base rounded-2xl hover:bg-white/20 transition-all">
             Nous contacter
@@ -569,13 +578,13 @@
     <!-- ══ MOBILE STICKY CTA ══════════════════════════════════════════════════ -->
     <Transition enter-active-class="transition duration-300" enter-from-class="translate-y-full opacity-0" enter-to-class="translate-y-0 opacity-100">
       <div v-if="showMobileCta" class="sm:hidden fixed bottom-0 inset-x-0 z-50 p-3 bg-white border-t border-slate-200 shadow-lg">
-        <Link href="/register"
+        <a href="/register"
           class="flex items-center justify-center gap-2 w-full py-3.5 bg-[#1B4F72] text-white text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95">
           Essai gratuit 14 jours — sans carte bancaire
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
           </svg>
-        </Link>
+        </a>
       </div>
     </Transition>
 
@@ -584,7 +593,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 
 // ── Background texture (data-URI with single quotes escaped) ───────────────
 const bgTexture = computed(() => {

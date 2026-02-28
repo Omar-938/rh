@@ -91,6 +91,8 @@ class LeaveService
         }
 
         $leaveRequest = DB::transaction(function () use ($employee, $data, $attachmentPath, $attachmentOriginalName): LeaveRequest {
+            $leaveTypeId = (int) $data['leave_type_id'];
+
             $days = $this->calculateWorkingDays(
                 $data['start_date'],
                 $data['end_date'],
@@ -102,7 +104,7 @@ class LeaveService
             $leaveRequest = LeaveRequest::create([
                 'user_id'                  => $employee->id,
                 'company_id'               => $employee->company_id,
-                'leave_type_id'            => $data['leave_type_id'],
+                'leave_type_id'            => $leaveTypeId,
                 'start_date'               => $data['start_date'],
                 'end_date'                 => $data['end_date'],
                 'start_half'               => $data['start_half'] ?? null,
@@ -115,7 +117,7 @@ class LeaveService
             ]);
 
             // Incrémente les jours pendants dans le solde
-            $this->incrementPending($employee, $data['leave_type_id'], $days);
+            $this->incrementPending($employee, $leaveTypeId, $days);
 
             return $leaveRequest;
         });

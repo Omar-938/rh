@@ -116,27 +116,11 @@ function toggleUserMenu() {
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 shrink-0">
         <div class="flex items-center gap-3 h-14 px-4 sm:px-6">
 
-            <!-- Retour (mobile, si backUrl fourni) -->
-            <Link
-                v-if="backUrl"
-                :href="backUrl"
-                class="lg:hidden p-2 -ml-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100
-                       rounded-lg transition-colors"
-                aria-label="Retour"
-            >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M15.75 19.5L8.25 12l7.5-7.5" />
-                </svg>
-            </Link>
-
-            <!-- Hamburger (mobile, seulement si pas de retour) -->
+            <!-- Hamburger (mobile, toujours visible) -->
             <button
-                v-else
                 @click="$emit('toggle-sidebar')"
                 class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100
-                       rounded-lg transition-colors"
+                       rounded-lg transition-colors shrink-0"
                 aria-label="Ouvrir le menu"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -145,6 +129,21 @@ function toggleUserMenu() {
                           d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </button>
+
+            <!-- Retour (mobile, en complément du hamburger si backUrl fourni) -->
+            <Link
+                v-if="backUrl"
+                :href="backUrl"
+                class="lg:hidden p-2 -mx-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100
+                       rounded-lg transition-colors shrink-0"
+                aria-label="Retour"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+            </Link>
 
             <!-- Titre de la page -->
             <div class="flex-1 min-w-0">

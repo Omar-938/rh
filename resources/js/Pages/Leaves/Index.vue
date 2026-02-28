@@ -40,7 +40,7 @@ function cancelLeave(id) {
 <template>
     <Head title="Congés" />
 
-    <AppLayout title="Congés">
+    <AppLayout title="Congés" :back-url="route('dashboard')">
 
         <!-- ── Header ── -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
@@ -143,14 +143,15 @@ function cancelLeave(id) {
                                    tracking-wider px-4 py-3">
                             Statut
                         </th>
-                        <th class="px-4 py-3 w-10" />
+                        <th class="px-4 py-3 w-6" />
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     <tr
                         v-for="req in requests.data"
                         :key="req.id"
-                        class="hover:bg-slate-50/60 transition-colors"
+                        class="hover:bg-slate-50/80 transition-colors cursor-pointer"
+                        @click="router.visit(route('leaves.show', req.id))"
                     >
                         <!-- Employé (reviewer uniquement) -->
                         <td v-if="is_reviewer" class="px-4 py-3">
@@ -205,36 +206,13 @@ function cancelLeave(id) {
                             </span>
                         </td>
 
-                        <!-- Actions -->
-                        <td class="px-4 py-3">
-                            <div class="flex items-center gap-1 justify-end">
-                                <Link
-                                    v-if="req.can_review || req.status === 'pending'"
-                                    :href="route('leaves.show', req.id)"
-                                    class="p-1.5 text-slate-400 hover:text-primary-600
-                                           hover:bg-primary-50 rounded-lg transition-colors"
-                                    title="Voir le détail"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                         stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </Link>
-                                <button
-                                    v-if="req.can_cancel"
-                                    @click="cancelLeave(req.id)"
-                                    class="p-1.5 text-slate-400 hover:text-danger-600
-                                           hover:bg-danger-50 rounded-lg transition-colors"
-                                    title="Annuler"
-                                >
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                         stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                              d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
+                        <!-- Chevron -->
+                        <td class="pr-4 py-3 text-right">
+                            <svg class="w-4 h-4 text-slate-300 inline" fill="none"
+                                 stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
                         </td>
                     </tr>
                 </tbody>

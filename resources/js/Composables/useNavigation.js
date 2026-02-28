@@ -70,9 +70,21 @@ export function useNavigation() {
             href: '/pointage',
             roles: ['admin', 'manager', 'employee'],
             mobile: true,
+            featured: true,
             icon: `<svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+            </svg>`,
+        },
+        {
+            key: 'team-overview',
+            label: 'Suivi pointage',
+            href: '/pointage/equipe',
+            roles: ['admin', 'manager'],
+            mobile: false,
+            icon: `<svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
             </svg>`,
         },
         {
@@ -91,7 +103,7 @@ export function useNavigation() {
             label: 'Bulletins',
             href: '/bulletins',
             roles: ['admin', 'employee'],
-            mobile: false,
+            mobile: true,
             icon: `<svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
@@ -140,9 +152,16 @@ export function useNavigation() {
         allItems.filter(item => !role.value || item.roles.includes(role.value))
     )
 
-    const mobileItems = computed(() =>
-        allItems.filter(item => item.mobile && (!role.value || item.roles.includes(role.value))).slice(0, 5)
-    )
+    const mobileItems = computed(() => {
+        const available = allItems.filter(
+            item => item.mobile && (!role.value || item.roles.includes(role.value))
+        )
+        // Ordre fixe mobile : Accueil | Congés | Pointage (centre) | Planning | Bulletins
+        const order = ['dashboard', 'leaves', 'timetracking', 'planning', 'payslips']
+        return order
+            .map(key => available.find(item => item.key === key))
+            .filter(Boolean)
+    })
 
     const sidebarBottomItems = computed(() =>
         bottomItems.filter(item => !role.value || item.roles.includes(role.value))

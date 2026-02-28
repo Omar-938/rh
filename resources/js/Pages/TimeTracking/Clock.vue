@@ -124,7 +124,7 @@ const autoOvertime = computed(() => props.entry?.auto_overtime ?? null)
 <template>
     <Head title="Pointage" />
 
-    <AppLayout title="Pointage">
+    <AppLayout title="Pointage" :back-url="route('dashboard')">
 
         <div class="max-w-lg mx-auto space-y-3 sm:space-y-4">
 

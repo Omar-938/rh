@@ -167,7 +167,7 @@ const totalEntries = computed(() =>
 <template>
     <Head title="Planning" />
 
-    <AppLayout title="Planning">
+    <AppLayout title="Planning" :back-url="route('dashboard')">
         <div @keydown="onKeydown" tabindex="-1" class="outline-none">
 
             <!-- ── Toolbar ── -->

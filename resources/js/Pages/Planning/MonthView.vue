@@ -70,7 +70,7 @@ function dayDominantStyle(day) {
 <template>
     <Head :title="`Planning — ${month_label}`" />
 
-    <AppLayout title="Planning">
+    <AppLayout title="Planning" :back-url="route('dashboard')">
 
         <!-- ── Toolbar ── -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">

@@ -154,6 +154,69 @@ class TimeTrackingController extends Controller
     }
 
     /**
+     * Vue temps réel du pointage de l'équipe (admin/manager).
+     */
+    public function teamOverview(Request $request): Response
+    {
+        $auth  = $request->user();
+        $today = Carbon::today()->toDateString();
+
+        $query = User::withoutGlobalScopes()
+            ->where('company_id', $auth->company_id)
+            ->where('is_active', true)
+            ->with('department')
+            ->orderBy('last_name')
+            ->orderBy('first_name');
+
+        if ($auth->isManager() && ! $auth->isAdmin()) {
+            $query->where(function ($q) use ($auth) {
+                $q->where('manager_id', $auth->id)->orWhere('id', $auth->id);
+            });
+        }
+
+        $users   = $query->get();
+        $entries = TimeEntry::withoutGlobalScopes()
+            ->whereIn('user_id', $users->pluck('id'))
+            ->whereDate('date', $today)
+            ->get()
+            ->keyBy('user_id');
+
+        $employees = $users->map(function (User $user) use ($entries): array {
+            $entry  = $entries->get($user->id);
+            $status = $entry ? $entry->status : 'absent';
+
+            return [
+                'id'             => $user->id,
+                'full_name'      => $user->full_name,
+                'initials'       => $user->initials,
+                'avatar_url'     => $user->avatar_url,
+                'department'     => $user->department?->name,
+                'status'         => $status,
+                'clock_in'       => $entry?->clock_in?->format('H:i'),
+                'clock_out'      => $entry?->clock_out?->format('H:i'),
+                'worked_minutes' => $entry?->worked_minutes ?? 0,
+                'worked_label'   => $entry ? TimeEntry::minutesToLabel($entry->worked_minutes) : null,
+                'progress'       => $entry ? round($entry->progress * 100) : 0,
+            ];
+        })->values()->all();
+
+        $countByStatus = array_count_values(array_column($employees, 'status'));
+
+        return Inertia::render('TimeTracking/TeamOverview', [
+            'employees'   => $employees,
+            'stats'       => [
+                'total'    => count($employees),
+                'working'  => $countByStatus['working']  ?? 0,
+                'on_break' => $countByStatus['on_break'] ?? 0,
+                'done'     => $countByStatus['done']     ?? 0,
+                'absent'   => $countByStatus['absent']   ?? 0,
+            ],
+            'today_label' => Carbon::today()->translatedFormat('l j F Y'),
+            'refreshed_at'=> now()->format('H:i'),
+        ]);
+    }
+
+    /**
      * Rapport mensuel équipe (admin/manager).
      */
     public function report(Request $request): Response

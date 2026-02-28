@@ -248,46 +248,6 @@ const statIcons = {
             </div>
         </div>
 
-        <!-- ── Planning équipe aujourd'hui ── -->
-        <div v-if="!is_new_account" class="bg-white rounded-2xl border border-slate-100 p-5 mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-semibold text-slate-900">Équipe aujourd'hui</h3>
-                <Link href="/planning" class="text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors">
-                    Planning →
-                </Link>
-            </div>
-
-            <!-- Compteurs -->
-            <div class="grid grid-cols-3 gap-3 mb-5">
-                <div class="flex flex-col items-center p-3 rounded-xl bg-success-50 border border-success-100">
-                    <span class="text-2xl font-bold text-success-700">{{ team_today.present }}</span>
-                    <span class="text-xs text-success-600 mt-0.5 font-medium">Présents</span>
-                </div>
-                <div class="flex flex-col items-center p-3 rounded-xl bg-primary-50 border border-primary-100">
-                    <span class="text-2xl font-bold text-primary-700">{{ team_today.remote }}</span>
-                    <span class="text-xs text-primary-600 mt-0.5 font-medium">Télétravail</span>
-                </div>
-                <div class="flex flex-col items-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                    <span class="text-2xl font-bold text-slate-600">{{ team_today.absent }}</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-medium">Absents</span>
-                </div>
-            </div>
-
-            <!-- Avatars membres -->
-            <div v-if="team_today.members.length > 0" class="flex flex-wrap gap-2">
-                <div v-for="member in team_today.members" :key="member.id"
-                     class="flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium transition-colors"
-                     :class="{
-                         'bg-success-50 border-success-200 text-success-700': member.status === 'present',
-                         'bg-primary-50 border-primary-200 text-primary-700': member.status === 'remote',
-                         'bg-slate-50 border-slate-200 text-slate-500':       member.status === 'absent',
-                     }">
-                    <span>{{ member.emoji }}</span>
-                    <span>{{ member.name }}</span>
-                </div>
-            </div>
-        </div>
-
         <!-- ── Actions rapides ── -->
         <div class="bg-white rounded-2xl border border-slate-100 p-5">
             <h3 class="font-semibold text-slate-900 mb-4">Actions rapides</h3>
