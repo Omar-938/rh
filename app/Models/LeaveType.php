@@ -28,6 +28,7 @@ class LeaveType extends Model
         'acquisition_type',
         'max_consecutive_days',
         'notice_days',
+        'requires_attachment',
         'sort_order',
     ];
 
@@ -39,6 +40,7 @@ class LeaveType extends Model
             'requires_approval'   => 'boolean',
             'is_paid'             => 'boolean',
             'is_active'           => 'boolean',
+            'requires_attachment' => 'boolean',
         ];
     }
 

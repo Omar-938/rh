@@ -90,7 +90,7 @@ const signerStatusColor = (status) => ({
 <template>
     <Head :title="`${document.name} — Documents`" />
 
-    <AppLayout :title="document.name">
+    <AppLayout :title="document.name" :back-url="route('documents.index')">
 
         <!-- ── Fil d'Ariane ──────────────────────────────────────────────── -->
         <nav class="flex items-center gap-2 text-sm text-slate-500 mb-5">

@@ -15,7 +15,23 @@ const form = useForm({
     start_half:       null,
     end_half:         null,
     employee_comment: '',
+    attachment:       null,
 })
+
+const attachmentInput = ref(null)
+const attachmentName  = ref('')
+
+function onAttachmentChange(event) {
+    const file = event.target.files?.[0] ?? null
+    form.attachment = file
+    attachmentName.value = file ? file.name : ''
+}
+
+function removeAttachment() {
+    form.attachment = null
+    attachmentName.value = ''
+    if (attachmentInput.value) attachmentInput.value.value = ''
+}
 
 const selectedType = computed(() =>
     props.leave_types.find(t => t.id === form.leave_type_id) ?? null
@@ -73,6 +89,8 @@ watch(isSingleDay, (val) => {
     }
 })
 
+const requiresAttachment = computed(() => selectedType.value?.requires_attachment ?? false)
+
 const hasEnoughBalance = computed(() => {
     if (!balance.value || !selectedType.value?.needs_balance) return true
     return balance.value.effective_remaining >= workingDays.value
@@ -91,14 +109,14 @@ const balanceWarning = computed(() => {
 const today = new Date().toISOString().slice(0, 10)
 
 function submit() {
-    form.post(route('leaves.store'))
+    form.post(route('leaves.store'), { forceFormData: true })
 }
 </script>
 
 <template>
     <Head title="Demande de congé" />
 
-    <AppLayout title="Congés">
+    <AppLayout title="Congés" :back-url="route('leaves.index')">
 
         <!-- ── Breadcrumb ── -->
         <div class="flex items-center gap-2 text-sm text-slate-500 mb-6">
@@ -332,6 +350,85 @@ function submit() {
                         </p>
                     </div>
 
+                    <!-- ── Pièce jointe ── -->
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+                            Justificatif
+                            <span v-if="requiresAttachment" class="ml-1 text-xs font-semibold text-white bg-danger-500 px-1.5 py-0.5 rounded-md">
+                                Obligatoire
+                            </span>
+                            <span v-else class="font-normal text-slate-400">(facultatif)</span>
+                        </label>
+
+                        <!-- Indicateur type arrêt maladie -->
+                        <p v-if="requiresAttachment" class="text-xs text-danger-600 mb-2 font-medium">
+                            Un arrêt de travail ou un justificatif médical est requis pour ce type de congé.
+                        </p>
+
+                        <!-- Zone de dépôt -->
+                        <div v-if="!attachmentName"
+                             class="relative border-2 border-dashed rounded-xl p-5 text-center transition-all cursor-pointer"
+                             :class="form.errors.attachment
+                                 ? 'border-danger-300 bg-danger-50'
+                                 : requiresAttachment
+                                     ? 'border-primary-300 bg-primary-50/50 hover:border-primary-400'
+                                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'"
+                             @click="attachmentInput?.click()"
+                        >
+                            <input
+                                ref="attachmentInput"
+                                type="file"
+                                class="sr-only"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                                @change="onAttachmentChange"
+                            />
+                            <svg class="w-8 h-8 mx-auto mb-2"
+                                 :class="requiresAttachment ? 'text-primary-400' : 'text-slate-300'"
+                                 fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                            </svg>
+                            <p class="text-sm font-medium"
+                               :class="requiresAttachment ? 'text-primary-700' : 'text-slate-600'">
+                                Cliquez pour ajouter un fichier
+                            </p>
+                            <p class="text-xs text-slate-400 mt-0.5">PDF, JPG ou PNG — max 10 Mo</p>
+                        </div>
+
+                        <!-- Fichier sélectionné -->
+                        <div v-else
+                             class="flex items-center gap-3 p-3 bg-success-50 border border-success-200 rounded-xl">
+                            <div class="w-9 h-9 rounded-lg bg-success-100 flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-success-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-success-800 truncate">{{ attachmentName }}</p>
+                                <p class="text-xs text-success-600">Prêt à être envoyé</p>
+                            </div>
+                            <button
+                                type="button"
+                                @click="removeAttachment"
+                                class="p-1.5 rounded-lg hover:bg-success-100 text-success-600 transition-colors shrink-0"
+                                title="Supprimer"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <p v-if="form.errors.attachment"
+                           class="mt-1.5 text-xs text-danger-600 font-medium flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            {{ form.errors.attachment }}
+                        </p>
+                    </div>
+
                     <!-- ── Actions ── -->
                     <div class="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
                         <Link
@@ -343,7 +440,7 @@ function submit() {
                         </Link>
                         <button
                             type="submit"
-                            :disabled="form.processing || workingDays <= 0 || !form.leave_type_id || !!balanceWarning"
+                            :disabled="form.processing || workingDays <= 0 || !form.leave_type_id || !!balanceWarning || (requiresAttachment && !form.attachment)"
                             class="px-5 py-2 bg-primary-700 text-white text-sm font-semibold
                                    rounded-xl hover:bg-primary-800 transition-colors shadow-sm
                                    disabled:opacity-50 disabled:cursor-not-allowed"

@@ -126,15 +126,15 @@ const autoOvertime = computed(() => props.entry?.auto_overtime ?? null)
 
     <AppLayout title="Pointage">
 
-        <div class="max-w-lg mx-auto space-y-4">
+        <div class="max-w-lg mx-auto space-y-3 sm:space-y-4">
 
             <!-- ── Carte horloge principale ──────────────────────────────── -->
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
-                <!-- En-tête date/heure -->
-                <div class="px-6 pt-6 pb-3 text-center">
-                    <p class="text-sm font-medium text-slate-500 capitalize">{{ dateLabel }}</p>
-                    <p class="text-4xl font-display font-bold text-slate-900 tabular-nums tracking-tight mt-1">
+                <!-- En-tête date/heure — compact sur mobile -->
+                <div class="px-6 pt-3 sm:pt-5 pb-1 sm:pb-2 text-center">
+                    <p class="text-xs sm:text-sm font-medium text-slate-500 capitalize">{{ dateLabel }}</p>
+                    <p class="text-3xl sm:text-4xl font-display font-bold text-slate-900 tabular-nums tracking-tight mt-0.5">
                         {{ timeLabel }}
                     </p>
                 </div>

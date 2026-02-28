@@ -67,7 +67,7 @@ const showLegalInfo = ref(false)
 <template>
     <Head title="Règles heures supplémentaires" />
 
-    <AppLayout title="Paramètres — Heures supplémentaires">
+    <AppLayout title="Paramètres — Heures supplémentaires" :back-url="route('settings.index')">
 
         <!-- ── En-tête ──────────────────────────────────────────────────────── -->
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">

@@ -237,7 +237,7 @@ function presenceRate(line) {
 
 <template>
     <Head :title="`Export ${exp.period_label}`" />
-    <AppLayout :title="`Export ${exp.period_label}`">
+    <AppLayout :title="`Export ${exp.period_label}`" :back-url="route('payroll-exports.index')">
 
         <!-- ── Fil d'Ariane ──────────────────────────────────────────────── -->
         <nav class="flex items-center gap-2 text-sm text-slate-400 mb-5">

@@ -19,7 +19,9 @@ use App\Notifications\LeaveRequestRejected;
 use App\Notifications\LeaveRequestSubmitted;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class LeaveService
 {
@@ -78,7 +80,17 @@ class LeaveService
      */
     public function create(User $employee, array $data): LeaveRequest
     {
-        $leaveRequest = DB::transaction(function () use ($employee, $data): LeaveRequest {
+        // Stocke la pièce jointe avant la transaction (opération I/O)
+        $attachmentPath         = null;
+        $attachmentOriginalName = null;
+
+        if (isset($data['attachment']) && $data['attachment'] instanceof UploadedFile) {
+            $file                   = $data['attachment'];
+            $attachmentOriginalName = $file->getClientOriginalName();
+            $attachmentPath         = $file->store("leave-attachments/{$employee->company_id}", 'local');
+        }
+
+        $leaveRequest = DB::transaction(function () use ($employee, $data, $attachmentPath, $attachmentOriginalName): LeaveRequest {
             $days = $this->calculateWorkingDays(
                 $data['start_date'],
                 $data['end_date'],
@@ -88,16 +100,18 @@ class LeaveService
             );
 
             $leaveRequest = LeaveRequest::create([
-                'user_id'          => $employee->id,
-                'company_id'       => $employee->company_id,
-                'leave_type_id'    => $data['leave_type_id'],
-                'start_date'       => $data['start_date'],
-                'end_date'         => $data['end_date'],
-                'start_half'       => $data['start_half'] ?? null,
-                'end_half'         => $data['end_half']   ?? null,
-                'days_count'       => $days,
-                'status'           => LeaveStatus::Pending,
-                'employee_comment' => $data['employee_comment'] ?? null,
+                'user_id'                  => $employee->id,
+                'company_id'               => $employee->company_id,
+                'leave_type_id'            => $data['leave_type_id'],
+                'start_date'               => $data['start_date'],
+                'end_date'                 => $data['end_date'],
+                'start_half'               => $data['start_half'] ?? null,
+                'end_half'                 => $data['end_half']   ?? null,
+                'days_count'               => $days,
+                'status'                   => LeaveStatus::Pending,
+                'employee_comment'         => $data['employee_comment'] ?? null,
+                'attachment_path'          => $attachmentPath,
+                'attachment_original_name' => $attachmentOriginalName,
             ]);
 
             // Incrémente les jours pendants dans le solde

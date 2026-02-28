@@ -1,5 +1,5 @@
 <template>
-  <AppLayout title="Importer des collaborateurs">
+  <AppLayout title="Importer des collaborateurs" :back-url="route('employees.index')">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
       <!-- Header -->

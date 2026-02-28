@@ -73,7 +73,7 @@ const listDays = computed(() =>
 <template>
     <Head :title="`Historique — ${month_label}`" />
 
-    <AppLayout :title="selected_user_name ? `Historique de ${selected_user_name}` : 'Mon historique'">
+    <AppLayout :title="selected_user_name ? `Historique de ${selected_user_name}` : 'Mon historique'" :back-url="route('time.clock')">
 
         <!-- ── Sélecteur employé (admin/manager) ────────────────────────── -->
         <div v-if="can_select_employee && employees.length > 0"

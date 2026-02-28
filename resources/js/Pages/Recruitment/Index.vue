@@ -83,7 +83,7 @@ const FILTERS = [
 
 <template>
     <Head title="Recrutement" />
-    <AppLayout title="Recrutement">
+    <AppLayout title="Recrutement" :back-url="route('dashboard')">
 
         <!-- ── En-tête ────────────────────────────────────────────────────── -->
         <div class="flex items-center justify-between mb-6">

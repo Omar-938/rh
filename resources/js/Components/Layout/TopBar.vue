@@ -3,7 +3,8 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
 
 defineProps({
-    title: { type: String, default: '' },
+    title:   { type: String, default: '' },
+    backUrl: { type: String, default: null },
 })
 defineEmits(['toggle-sidebar'])
 
@@ -115,8 +116,24 @@ function toggleUserMenu() {
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 shrink-0">
         <div class="flex items-center gap-3 h-14 px-4 sm:px-6">
 
-            <!-- Hamburger (mobile) -->
+            <!-- Retour (mobile, si backUrl fourni) -->
+            <Link
+                v-if="backUrl"
+                :href="backUrl"
+                class="lg:hidden p-2 -ml-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100
+                       rounded-lg transition-colors"
+                aria-label="Retour"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+            </Link>
+
+            <!-- Hamburger (mobile, seulement si pas de retour) -->
             <button
+                v-else
                 @click="$emit('toggle-sidebar')"
                 class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100
                        rounded-lg transition-colors"

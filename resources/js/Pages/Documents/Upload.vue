@@ -114,7 +114,7 @@ const targetScope = computed(() => {
 <template>
     <Head title="Importer un document" />
 
-    <AppLayout title="Documents">
+    <AppLayout title="Documents" :back-url="route('documents.index')">
 
         <!-- ── En-tête ────────────────────────────────────────────────────── -->
         <div class="flex items-start justify-between mb-6">

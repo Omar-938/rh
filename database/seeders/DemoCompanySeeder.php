@@ -63,7 +63,7 @@ class DemoCompanySeeder extends Seeder
                 'company_id'        => $company->id,
                 'first_name'        => 'Sophie',
                 'last_name'         => 'Martin',
-                'email'             => 'admin@demo.simplirh.fr',
+                'email'             => 'admin@demo.simpli-rh.com',
                 'password'          => Hash::make('password'),
                 'role'              => UserRole::Admin,
                 'email_verified_at' => now(),
@@ -104,7 +104,7 @@ class DemoCompanySeeder extends Seeder
                 'department_id'     => $deptIT->id,
                 'first_name'        => 'Thomas',
                 'last_name'         => 'Dupont',
-                'email'             => 'manager.it@demo.simplirh.fr',
+                'email'             => 'manager.it@demo.simpli-rh.com',
                 'password'          => Hash::make('password'),
                 'role'              => UserRole::Manager,
                 'email_verified_at' => now(),
@@ -119,7 +119,7 @@ class DemoCompanySeeder extends Seeder
                 'department_id'     => $deptComm->id,
                 'first_name'        => 'Isabelle',
                 'last_name'         => 'Leroy',
-                'email'             => 'manager.comm@demo.simplirh.fr',
+                'email'             => 'manager.comm@demo.simpli-rh.com',
                 'password'          => Hash::make('password'),
                 'role'              => UserRole::Manager,
                 'email_verified_at' => now(),
@@ -139,7 +139,7 @@ class DemoCompanySeeder extends Seeder
                 [
                     'first_name'    => 'Lucas',
                     'last_name'     => 'Bernard',
-                    'email'         => 'lucas.bernard@demo.simplirh.fr',
+                    'email'         => 'lucas.bernard@demo.simpli-rh.com',
                     'department_id' => $deptIT->id,
                     'manager_id'    => $managerIT->id,
                     'hire_date'     => '2021-05-03',
@@ -148,7 +148,7 @@ class DemoCompanySeeder extends Seeder
                 [
                     'first_name'    => 'Emma',
                     'last_name'     => 'Petit',
-                    'email'         => 'emma.petit@demo.simplirh.fr',
+                    'email'         => 'emma.petit@demo.simpli-rh.com',
                     'department_id' => $deptIT->id,
                     'manager_id'    => $managerIT->id,
                     'hire_date'     => '2022-01-10',
@@ -157,7 +157,7 @@ class DemoCompanySeeder extends Seeder
                 [
                     'first_name'    => 'Hugo',
                     'last_name'     => 'Moreau',
-                    'email'         => 'hugo.moreau@demo.simplirh.fr',
+                    'email'         => 'hugo.moreau@demo.simpli-rh.com',
                     'department_id' => $deptComm->id,
                     'manager_id'    => $managerComm->id,
                     'hire_date'     => '2020-07-01',
@@ -166,7 +166,7 @@ class DemoCompanySeeder extends Seeder
                 [
                     'first_name'    => 'Chloé',
                     'last_name'     => 'Simon',
-                    'email'         => 'chloe.simon@demo.simplirh.fr',
+                    'email'         => 'chloe.simon@demo.simpli-rh.com',
                     'department_id' => $deptComm->id,
                     'manager_id'    => $managerComm->id,
                     'hire_date'     => '2023-02-13',
@@ -175,7 +175,7 @@ class DemoCompanySeeder extends Seeder
                 [
                     'first_name'    => 'Nathan',
                     'last_name'     => 'Roux',
-                    'email'         => 'nathan.roux@demo.simplirh.fr',
+                    'email'         => 'nathan.roux@demo.simpli-rh.com',
                     'department_id' => $deptRH->id,
                     'manager_id'    => $admin->id,
                     'hire_date'     => '2024-09-02',
@@ -243,6 +243,6 @@ class DemoCompanySeeder extends Seeder
             }
         });
 
-        $this->command?->info('✅ DemoCompanySeeder : environnement de démonstration créé (admin@demo.simplirh.fr / password)');
+        $this->command?->info('✅ DemoCompanySeeder : environnement de démonstration créé (admin@demo.simpli-rh.com / password)');
     }
 }

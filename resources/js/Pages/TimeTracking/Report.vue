@@ -82,7 +82,7 @@ function printReport() {
 <template>
     <Head :title="`Rapport ${month_label}`" />
 
-    <AppLayout :title="`Rapport mensuel — ${month_label}`">
+    <AppLayout :title="`Rapport mensuel — ${month_label}`" :back-url="route('time.history')">
 
         <!-- ── Barre d'outils ─────────────────────────────────────────────── -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6 print:hidden">

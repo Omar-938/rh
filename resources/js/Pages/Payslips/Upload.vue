@@ -195,7 +195,7 @@ const monthLabel = (m) => MONTHS.find(mo => mo.value === parseInt(m))?.label ?? 
 
 <template>
     <Head title="Importer des bulletins" />
-    <AppLayout title="Bulletins de paie">
+    <AppLayout title="Bulletins de paie" :back-url="route('payslips.index')">
 
         <!-- En-tête ─────────────────────────────────────────────────────────── -->
         <div class="flex items-start justify-between mb-6">

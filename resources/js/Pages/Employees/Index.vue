@@ -102,7 +102,7 @@ function onKeydown(e) {
 
 <template>
     <Head title="Collaborateurs" />
-    <AppLayout title="Collaborateurs">
+    <AppLayout title="Collaborateurs" :back-url="route('dashboard')">
         <div @keydown="onKeydown" tabindex="-1" class="outline-none">
 
             <!-- ── En-tête ───────────────────────────────────────────────────── -->

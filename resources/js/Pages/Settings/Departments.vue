@@ -128,7 +128,7 @@ function onKeydown(e) {
 <template>
     <Head title="Départements — Paramètres" />
 
-    <AppLayout title="Paramètres">
+    <AppLayout title="Paramètres" :back-url="route('settings.index')">
         <div @keydown="onKeydown" tabindex="-1" class="outline-none">
 
             <!-- ── En-tête de page ── -->

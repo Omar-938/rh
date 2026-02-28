@@ -1,5 +1,5 @@
 <template>
-  <AppLayout title="Paramètres">
+  <AppLayout title="Paramètres" :back-url="route('dashboard')">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-8">
 
       <!-- Header -->

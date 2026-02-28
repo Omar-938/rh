@@ -605,7 +605,7 @@
     sont conservées par <strong>SimpliRH</strong> pour garantir la non-répudiation.
   </div>
   <div class="footer-bottom">
-    <span>SimpliRH — Gestion RH · simplirh.fr</span>
+    <span>SimpliRH — Gestion RH · simpli-rh.com</span>
     <span>Certificat n° <strong>{{ $certificate_id }}</strong></span>
     <span>Généré le {{ $generated_at }}</span>
   </div>

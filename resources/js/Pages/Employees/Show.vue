@@ -75,7 +75,7 @@ const ROLE_COLORS = {
 
 <template>
     <Head :title="`${employee.full_name} — Collaborateurs`" />
-    <AppLayout title="Collaborateurs">
+    <AppLayout title="Collaborateurs" :back-url="route('employees.index')">
 
         <!-- ── Fil d'Ariane + actions ────────────────────────────────────────── -->
         <div class="flex items-center justify-between gap-3 mb-6 flex-wrap">

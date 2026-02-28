@@ -130,10 +130,11 @@ Route::middleware(['auth', 'verified', 'company.scope'])->group(function () {
         Route::get('/demande',                         [LeaveController::class, 'create']) ->name('create');
         Route::post('/',                               [LeaveController::class, 'store'])  ->name('store');
         Route::get('/soldes',                          [LeaveController::class, 'balances'])->name('balances');
-        Route::get('/{leave}',                         [LeaveController::class, 'show'])   ->name('show');
-        Route::post('/{leave}/approuver',              [LeaveController::class, 'approve'])->name('approve');
-        Route::post('/{leave}/rejeter',                [LeaveController::class, 'reject']) ->name('reject');
-        Route::delete('/{leave}',                      [LeaveController::class, 'cancel']) ->name('cancel');
+        Route::get('/{leave}',                         [LeaveController::class, 'show'])               ->name('show');
+        Route::get('/{leave}/justificatif',            [LeaveController::class, 'downloadAttachment']) ->name('download-attachment');
+        Route::post('/{leave}/approuver',              [LeaveController::class, 'approve'])            ->name('approve');
+        Route::post('/{leave}/rejeter',                [LeaveController::class, 'reject'])             ->name('reject');
+        Route::delete('/{leave}',                      [LeaveController::class, 'cancel'])             ->name('cancel');
     });
 
     // ── Pointage ──────────────────────────────────────────────────────────────

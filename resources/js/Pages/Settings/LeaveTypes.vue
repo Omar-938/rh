@@ -80,6 +80,7 @@ const form = useForm({
     is_active:            true,
     max_consecutive_days: '',
     notice_days:          0,
+    requires_attachment:  false,
 })
 
 const daysDisabled = computed(() => form.acquisition_type === 'none')
@@ -102,6 +103,7 @@ function openCreate() {
     form.is_active         = true
     form.notice_days       = 0
     form.max_consecutive_days = ''
+    form.requires_attachment  = false
     form.clearErrors()
     showModal.value = true
     nextTick(() => nameInput.value?.focus())
@@ -120,6 +122,7 @@ function openEdit(lt) {
     form.is_active            = lt.is_active
     form.max_consecutive_days = lt.max_consecutive_days ?? ''
     form.notice_days          = lt.notice_days
+    form.requires_attachment  = lt.requires_attachment ?? false
     form.clearErrors()
     showModal.value = true
     nextTick(() => nameInput.value?.focus())
@@ -194,7 +197,7 @@ function monthlyAccrual(daysPerYear) {
 <template>
     <Head title="Types de congés — Paramètres" />
 
-    <AppLayout title="Paramètres">
+    <AppLayout title="Paramètres" :back-url="route('settings.index')">
         <div @keydown="onKeydown" tabindex="-1" class="outline-none">
 
             <!-- ── En-tête ── -->
@@ -353,6 +356,13 @@ function monthlyAccrual(daysPerYear) {
                                           class="inline-flex items-center text-xs px-2.5 py-1
                                                  bg-warning-50 text-warning-700 rounded-full font-medium">
                                         ✅ Approbation requise
+                                    </span>
+
+                                    <!-- Justificatif obligatoire -->
+                                    <span v-if="lt.requires_attachment"
+                                          class="inline-flex items-center text-xs px-2.5 py-1
+                                                 bg-primary-50 text-primary-700 rounded-full font-medium">
+                                        📎 Justificatif requis
                                     </span>
 
                                     <!-- Limite jours consécutifs -->
@@ -714,7 +724,7 @@ function monthlyAccrual(daysPerYear) {
                                     </div>
 
                                     <!-- Toggles -->
-                                    <div class="grid sm:grid-cols-3 gap-3">
+                                    <div class="grid sm:grid-cols-2 gap-3">
 
                                         <!-- Approbation requise -->
                                         <label class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer
@@ -776,6 +786,27 @@ function monthlyAccrual(daysPerYear) {
                                             <div>
                                                 <p class="text-sm font-semibold text-slate-700">Actif</p>
                                                 <p class="text-xs text-slate-400">Visible aux employés</p>
+                                            </div>
+                                        </label>
+
+                                        <!-- Justificatif requis -->
+                                        <label class="flex items-center gap-3 p-4 border rounded-xl cursor-pointer
+                                                       transition-all hover:bg-slate-50"
+                                               :class="form.requires_attachment ? 'border-primary-300 bg-primary-50/50' : 'border-slate-200'">
+                                            <button
+                                                type="button"
+                                                @click="form.requires_attachment = !form.requires_attachment"
+                                                class="relative inline-flex h-6 w-11 items-center rounded-full
+                                                       transition-colors shrink-0 focus:outline-none"
+                                                :class="form.requires_attachment ? 'bg-primary-600' : 'bg-slate-200'"
+                                            >
+                                                <span class="inline-block w-4 h-4 transform rounded-full bg-white shadow
+                                                             transition-transform duration-200"
+                                                      :class="form.requires_attachment ? 'translate-x-6' : 'translate-x-1'" />
+                                            </button>
+                                            <div>
+                                                <p class="text-sm font-semibold text-slate-700">Justificatif</p>
+                                                <p class="text-xs text-slate-400">Pièce jointe obligatoire</p>
                                             </div>
                                         </label>
 

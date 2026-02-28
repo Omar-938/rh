@@ -69,7 +69,7 @@ const totalSentThisYear = computed(() =>
 
 <template>
     <Head title="Export variables de paie" />
-    <AppLayout title="Export variables de paie">
+    <AppLayout title="Export variables de paie" :back-url="route('dashboard')">
 
         <!-- ── En-tête ────────────────────────────────────────────────────── -->
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">

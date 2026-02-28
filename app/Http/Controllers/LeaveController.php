@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Services\LeaveService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -94,13 +96,14 @@ class LeaveController extends Controller
             ->orderBy('sort_order')
             ->get()
             ->map(fn (LeaveType $lt) => [
-                'id'               => $lt->id,
-                'name'             => $lt->name,
-                'color'            => $lt->color,
-                'icon'             => $lt->icon,
-                'requires_approval'=> $lt->requires_approval,
-                'is_paid'          => $lt->is_paid,
-                'needs_balance'    => $lt->acquisition_type->value !== 'none',
+                'id'                  => $lt->id,
+                'name'                => $lt->name,
+                'color'               => $lt->color,
+                'icon'                => $lt->icon,
+                'requires_approval'   => $lt->requires_approval,
+                'requires_attachment' => $lt->requires_attachment,
+                'is_paid'             => $lt->is_paid,
+                'needs_balance'       => $lt->acquisition_type->value !== 'none',
             ]);
 
         // Soldes de l'employé pour chaque type
@@ -183,7 +186,11 @@ class LeaveController extends Controller
                 'end_date'         => $leave->end_date->format('Y-m-d'),
                 'start_half'       => $leave->start_half,
                 'end_half'         => $leave->end_half,
-                'employee_comment' => $leave->employee_comment,
+                'employee_comment'          => $leave->employee_comment,
+                'attachment_url'            => $leave->attachment_path
+                    ? route('leaves.download-attachment', $leave->id)
+                    : null,
+                'attachment_original_name'  => $leave->attachment_original_name,
                 'reviewer_comment' => $leave->reviewer_comment,
                 'reviewed_at'      => $leave->reviewed_at?->format('d/m/Y H:i'),
                 'cancelled_at'     => $leave->cancelled_at?->format('d/m/Y H:i'),
@@ -260,6 +267,23 @@ class LeaveController extends Controller
         $this->leaveService->cancel($leave);
 
         return back()->with('success', 'La demande de congé a été annulée.');
+    }
+
+    /**
+     * Téléchargement sécurisé de la pièce jointe d'une demande de congé.
+     */
+    public function downloadAttachment(LeaveRequest $leave): StreamedResponse
+    {
+        $this->authorize('view', $leave);
+
+        if (! $leave->attachment_path || ! Storage::disk('local')->exists($leave->attachment_path)) {
+            abort(404, 'Pièce jointe introuvable.');
+        }
+
+        return Storage::disk('local')->download(
+            $leave->attachment_path,
+            $leave->attachment_original_name ?? basename($leave->attachment_path),
+        );
     }
 
     /**

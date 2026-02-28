@@ -1,5 +1,5 @@
 <template>
-  <AppLayout title="Facturation">
+  <AppLayout title="Facturation" :back-url="route('settings.index')">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
       <!-- Header -->
@@ -258,7 +258,7 @@
       <div class="flex items-center justify-center pt-2">
         <p class="text-sm text-slate-400 text-center">
           Des questions sur votre abonnement ?
-          <a href="mailto:support@simplirh.fr" class="text-primary-600 hover:text-primary-700 font-medium ml-1 transition-colors">
+          <a href="mailto:support@simpli-rh.com" class="text-primary-600 hover:text-primary-700 font-medium ml-1 transition-colors">
             Contactez-nous →
           </a>
         </p>

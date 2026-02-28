@@ -39,7 +39,7 @@ function reject() {
 <template>
     <Head :title="`HS — ${entry.date_label}`" />
 
-    <AppLayout :title="`Heures sup. — ${entry.date_label}`">
+    <AppLayout :title="`Heures sup. — ${entry.date_label}`" :back-url="route('overtime.index')">
 
         <div class="max-w-xl mx-auto space-y-5">
 

@@ -96,7 +96,7 @@ function submit() {
 <template>
     <Head title="Déclarer des heures supplémentaires" />
 
-    <AppLayout title="Déclarer des heures supplémentaires">
+    <AppLayout title="Déclarer des heures supplémentaires" :back-url="route('overtime.index')">
 
         <div class="max-w-xl mx-auto">
 

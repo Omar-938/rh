@@ -55,9 +55,9 @@ php artisan serve
 ## Compte démo
 
 Après le seeding :
-- **Admin** : admin@demo.simplirh.fr / password
-- **Manager** : manager1@demo.simplirh.fr / password
-- **Employé** : employe1@demo.simplirh.fr / password
+- **Admin** : admin@demo.simpli-rh.com / password
+- **Manager** : manager.it@demo.simpli-rh.com / password
+- **Employé** : lucas.bernard@demo.simpli-rh.com / password
 
 ## Licence
 

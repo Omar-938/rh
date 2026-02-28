@@ -121,7 +121,7 @@
                     <div class="w-3 h-3 rounded-full bg-green-400"></div>
                   </div>
                   <div class="flex-1 mx-3 bg-white rounded-md px-3 py-1 text-xs text-slate-400 font-mono">
-                    app.simplirh.fr/dashboard
+                    app.simpli-rh.com/dashboard
                   </div>
                 </div>
 
@@ -517,7 +517,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
             </svg>
           </Link>
-          <a href="mailto:bonjour@simplirh.fr"
+          <a href="mailto:bonjour@simpli-rh.com"
             class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 border border-white/20 text-white font-semibold text-base rounded-2xl hover:bg-white/20 transition-all">
             Nous contacter
           </a>
@@ -666,7 +666,7 @@ const features = [
       'Compteurs mis à jour en temps réel (CP, RTT, ancienneté)',
       'Calendrier de l\'équipe pour visualiser les absences',
     ],
-    url:     'app.simplirh.fr/conges',
+    url:     'app.simpli-rh.com/conges',
     mockup: `<div class="space-y-3">
       <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
         <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">MD</div><div><p class="text-xs font-semibold text-slate-800">Marie Dupont</p><p class="text-xs text-slate-400">Congés annuels · 5 jours · 15-19 juil.</p></div></div>
@@ -692,7 +692,7 @@ const features = [
       'Distribution individuelle avec email de notification',
       'Historique complet accessible 24h/24 par chaque collaborateur',
     ],
-    url:    'app.simplirh.fr/bulletins',
+    url:    'app.simpli-rh.com/bulletins',
     mockup: `<div class="space-y-3">
       <div class="border-2 border-dashed border-green-200 rounded-xl p-4 text-center bg-green-50"><p class="text-sm font-semibold text-green-700">Glissez 47 bulletins ici</p><p class="text-xs text-green-500 mt-1">PDF reconnus automatiquement</p></div>
       <div class="space-y-2">
@@ -715,7 +715,7 @@ const features = [
       'Workflow de validation manager intégré',
       'Rapport mensuel exportable pour la paie',
     ],
-    url:    'app.simplirh.fr/pointage',
+    url:    'app.simpli-rh.com/pointage',
     mockup: `<div class="text-center space-y-4">
       <div class="w-20 h-20 rounded-full bg-green-100 border-4 border-green-300 flex items-center justify-center mx-auto"><p class="text-xs font-bold text-green-700">Pointé<br/>09:02</p></div>
       <div class="grid grid-cols-2 gap-3">
@@ -742,7 +742,7 @@ const features = [
       'Certificat d\'horodatage et traçabilité complète',
       'Archivage sécurisé chiffré AES-256',
     ],
-    url:    'app.simplirh.fr/documents',
+    url:    'app.simpli-rh.com/documents',
     mockup: `<div class="space-y-3">
       <div class="bg-purple-50 rounded-xl p-4 border border-purple-100">
         <div class="flex items-center gap-3 mb-3"><div class="w-10 h-12 bg-white rounded border border-purple-200 flex items-center justify-center text-xl">📄</div><div><p class="text-xs font-semibold text-slate-800">Contrat CDI — Marie Dupont.pdf</p><p class="text-xs text-slate-400">Envoyé le 12 mars 2025</p></div></div>
@@ -885,7 +885,7 @@ const footerLinks = [
     links: [
       { label: 'À propos',          href: '#' },
       { label: 'Blog RH',           href: '#' },
-      { label: 'Nous contacter',    href: 'mailto:bonjour@simplirh.fr' },
+      { label: 'Nous contacter',    href: 'mailto:bonjour@simpli-rh.com' },
     ],
   },
   {

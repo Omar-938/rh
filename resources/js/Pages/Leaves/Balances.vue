@@ -101,7 +101,7 @@ const totalRemaining = computed(() => {
 <template>
     <Head title="Soldes de congés" />
 
-    <AppLayout title="Congés">
+    <AppLayout title="Congés" :back-url="route('leaves.index')">
 
         <!-- ── Header ── -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">

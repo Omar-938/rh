@@ -81,7 +81,7 @@ function submitReview(entry, action) {
 <template>
     <Head title="Heures supplémentaires" />
 
-    <AppLayout title="Heures supplémentaires">
+    <AppLayout title="Heures supplémentaires" :back-url="route('dashboard')">
 
         <!-- ── En-tête ────────────────────────────────────────────────────── -->
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">

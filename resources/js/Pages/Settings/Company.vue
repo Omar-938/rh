@@ -1,5 +1,5 @@
 <template>
-  <AppLayout title="Paramètres entreprise">
+  <AppLayout title="Paramètres entreprise" :back-url="route('settings.index')">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
       <!-- Header -->

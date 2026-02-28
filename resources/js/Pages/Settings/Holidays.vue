@@ -131,7 +131,7 @@ function weekdayColor(holiday) {
 <template>
     <Head :title="`Jours fériés ${year} — Paramètres`" />
 
-    <AppLayout title="Paramètres">
+    <AppLayout title="Paramètres" :back-url="route('settings.index')">
         <div @keydown="onKeydown" tabindex="-1" class="outline-none">
 
             <!-- ── En-tête ───────────────────────────────────────────────────── -->

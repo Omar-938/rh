@@ -121,7 +121,7 @@ const monthCoverage = computed(() => {
 
 <template>
     <Head title="Bulletins de paie" />
-    <AppLayout title="Bulletins de paie">
+    <AppLayout title="Bulletins de paie" :back-url="route('dashboard')">
 
         <!-- ── En-tête ────────────────────────────────────────────────────── -->
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">

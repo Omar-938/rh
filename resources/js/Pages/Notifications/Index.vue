@@ -40,7 +40,7 @@ const typeColors = {
 <template>
     <Head title="Notifications" />
 
-    <AppLayout title="Notifications">
+    <AppLayout title="Notifications" :back-url="route('dashboard')">
 
         <!-- ── Header ── -->
         <div class="flex items-center justify-between mb-6">

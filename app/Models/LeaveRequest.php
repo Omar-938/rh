@@ -25,6 +25,8 @@ class LeaveRequest extends Model
         'days_count',
         'status',
         'employee_comment',
+        'attachment_path',
+        'attachment_original_name',
         'reviewer_comment',
         'reviewed_by',
         'reviewed_at',

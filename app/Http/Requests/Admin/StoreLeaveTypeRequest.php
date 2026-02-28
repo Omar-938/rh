@@ -28,6 +28,7 @@ class StoreLeaveTypeRequest extends FormRequest
             'is_active'            => ['boolean'],
             'max_consecutive_days' => ['nullable', 'integer', 'min:1', 'max:365'],
             'notice_days'          => ['required', 'integer', 'min:0', 'max:365'],
+            'requires_attachment'  => ['boolean'],
         ];
     }
 

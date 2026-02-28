@@ -169,7 +169,7 @@ function toggleRating(n) {
 </script>
 
 <template>
-    <AppLayout :title="`Pipeline — ${posting.title}`">
+    <AppLayout :title="`Pipeline — ${posting.title}`" :back-url="route('recruitment.index')">
 
         <!-- ── Sticky header ──────────────────────────────────────────────────── -->
         <div class="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-200 px-4 sm:px-6 py-3">

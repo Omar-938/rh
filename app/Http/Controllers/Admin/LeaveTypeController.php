@@ -41,6 +41,7 @@ class LeaveTypeController extends Controller
                 'acquisition_label'    => $lt->acquisition_type->label(),
                 'max_consecutive_days' => $lt->max_consecutive_days,
                 'notice_days'          => $lt->notice_days,
+                'requires_attachment'  => $lt->requires_attachment,
                 'sort_order'           => $lt->sort_order,
                 'leave_requests_count' => $lt->leave_requests_count,
             ]);

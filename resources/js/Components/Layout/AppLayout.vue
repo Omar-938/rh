@@ -8,7 +8,8 @@ import Toast from '@/Components/UI/Toast.vue'
 import InstallBanner from '@/Components/PWA/InstallBanner.vue'
 
 defineProps({
-    title: { type: String, default: '' },
+    title:   { type: String, default: '' },
+    backUrl: { type: String, default: null },
 })
 
 const sidebarOpen = ref(false)
@@ -33,6 +34,7 @@ watch(() => page.url, () => { sidebarOpen.value = false })
             <!-- TopBar -->
             <TopBar
                 :title="title"
+                :back-url="backUrl"
                 @toggle-sidebar="sidebarOpen = !sidebarOpen"
             >
                 <template v-if="$slots.title" #title>
