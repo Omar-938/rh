@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RecruitmentController;
@@ -48,6 +49,14 @@ Route::prefix('signature')->name('signature.')->group(function () {
 |--------------------------------------------------------------------------
 */
 require __DIR__.'/auth.php';
+
+// ── OAuth Google ─────────────────────────────────────────────────────────────
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google',          [SocialAuthController::class, 'redirectToGoogle'])   ->name('auth.google');
+    Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+    Route::get('/auth/google/complete', [SocialAuthController::class, 'showComplete'])        ->name('auth.google.complete');
+    Route::post('/auth/google/complete', [SocialAuthController::class, 'complete'])           ->name('auth.google.complete.post');
+});
 
 /*
 |--------------------------------------------------------------------------
