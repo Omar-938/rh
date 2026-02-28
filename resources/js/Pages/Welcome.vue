@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-white text-slate-900 antialiased" style="font-family: 'Inter', sans-serif;">
-    <Head title="SimpliRH — La gestion RH qui tourne toute seule" />
+    <Head title="SimpliRH — Logiciel RH pour TPE et PME françaises" />
 
     <!-- ══ NAVIGATION ════════════════════════════════════════════════════════ -->
     <header
@@ -61,12 +61,12 @@
 
             <h1 class="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6"
               style="font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.02em;">
-              La gestion RH<br>
-              <span style="background: linear-gradient(90deg, #7DD3FC, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">qui tourne<br>toute seule.</span>
+              La RH de votre équipe,<br>
+              <span style="background: linear-gradient(90deg, #7DD3FC, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">enfin centralisée.</span>
             </h1>
 
             <p class="text-white/70 text-lg leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0">
-              Congés, bulletins, pointage, signatures — SimpliRH automatise les tâches répétitives pour que vous vous concentrez sur ce qui compte vraiment.
+              Congés, pointage, bulletins de paie, heures sup et signatures — tout dans un logiciel RH simple et complet, pensé pour les TPE et PME françaises.
             </p>
 
             <!-- CTAs -->
